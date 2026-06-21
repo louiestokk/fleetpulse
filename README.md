@@ -1,8 +1,6 @@
 
   # Fleet Management Dashboard
 
-  This is a code bundle for Fleet Management Dashboard. The original project is available at https://www.figma.com/design/QdBqH89MlUiWuQZhol6IMK/Fleet-Management-Dashboard.
-
   ## Running the code
 
   Run `npm i` to install the dependencies.
