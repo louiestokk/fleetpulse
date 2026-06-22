@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router";
 import { motion } from "motion/react";
 import { Card } from "../components/ui/card";
@@ -6,13 +7,13 @@ import { Progress } from "../components/ui/progress";
 import { Button } from "../components/ui/button";
 import { Separator } from "../components/ui/separator";
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
+  ResponsiveContainer
 } from "recharts";
 import {
   ArrowLeft,
@@ -26,8 +27,12 @@ import {
   AlertTriangle,
   Zap,
   Clock,
+  Building,
+  ChevronRight,
+  DollarSign,
+  TrendingDown
 } from "lucide-react";
-import { vehicles, batteryHistoryData } from "../data/mockData";
+import { dataService } from "../services/dataService";
 import { UXThinkingSection } from "../components/UXThinking";
 
 const statusColors = {
@@ -48,7 +53,12 @@ const statusLabels = {
 
 export function VehicleDetails() {
   const { id } = useParams();
+  const [vehicles, setVehicles] = useState(dataService.getVehicles());
   const vehicle = vehicles.find((v) => v.id === id);
+
+  useEffect(() => {
+    setVehicles(dataService.getVehicles());
+  }, []);
 
   if (!vehicle) {
     return (
@@ -63,6 +73,44 @@ export function VehicleDetails() {
     );
   }
 
+  // Calculate costs and revenue
+  const totalCost =
+    vehicle.costs.fuel +
+    vehicle.costs.salary +
+    vehicle.costs.tolls +
+    vehicle.costs.ferries +
+    vehicle.costs.maintenance;
+  const profit = vehicle.revenue - totalCost;
+  const marginPercentage = Math.round((profit / vehicle.revenue) * 1000) / 10;
+
+  // Chart data for cost breakdown
+  const costData = [
+    { name: "Lön", belopp: vehicle.costs.salary },
+    { name: "Bränsle", belopp: vehicle.costs.fuel },
+    { name: "Vägavgifter", belopp: vehicle.costs.tolls },
+    { name: "Färjor", belopp: vehicle.costs.ferries },
+    { name: "Underhåll", belopp: vehicle.costs.maintenance },
+  ];
+
+  // Try to match customer based on primary route or name
+  const matchedCustomer = vehicle.id === "VLV-003" || vehicle.id === "VLV-001"
+    ? "Customer A AB"
+    : vehicle.id === "VLV-002"
+      ? "Nordic Retail Group"
+      : "Scandic Logistics";
+
+  const getMarginColor = (margin: number) => {
+    if (margin >= 15) return "text-green-600";
+    if (margin >= 8) return "text-yellow-600";
+    return "text-red-600";
+  };
+
+  const getMarginBg = (margin: number) => {
+    if (margin >= 15) return "bg-green-100";
+    if (margin >= 8) return "bg-yellow-100";
+    return "bg-red-100";
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -71,312 +119,290 @@ export function VehicleDetails() {
     >
       {/* Back Button */}
       <Link to="/app">
-        <Button variant="ghost" className="gap-2">
+        <Button variant="ghost" className="gap-2 text-gray-600 hover:text-slate-900">
           <ArrowLeft className="w-4 h-4" />
           Tillbaka till Dashboard
         </Button>
       </Link>
 
       {/* UX Thinking */}
-      <UXThinkingSection
-        problem="Förare och operatörer behöver snabbt förstå ett fordons aktuella status och historik för att fatta beslut om laddning, rutt och underhåll."
+      {/* <UXThinkingSection
+        problem="Operatörer och fleet managers behöver se hela kedjan av lönsamhet per enskilt fordon för att identifiera exakt var i kedjan en förlust uppstår."
         uxDecisions={[
-          "Expanderad vy från översikten: Bibehåller visuell kontinuitet och minskar orienteringstid",
-          "Stora, lättlästa värden: Kritiska mätvärden (batteri, temperatur) är omedelbart synliga",
-          "Historikdiagram: Visar trender istället för endast nuläge - hjälper till att förutsäga behov",
-          "Färgkodad statusinformation: Röd för problem, gul för varningar, grön för normalt",
-          "Kontext vid varje mätvärde: 'Nästa service om 58 körningar' är mer användbart än bara 142",
+          "Transport Intelligence Graph: En steg-för-steg-vy som visar sambandet mellan fordon, förare, rutt, kund och vinst.",
+          "Visualiserade kostnadsposter: Stapeldiagrammet visar direkt vilken enskild kostnadspost som belastar fordonsmarginalen mest.",
+          "Prediktiva AI-varningar: AI-boxen analyserar avvikelser (t.ex. tomgång, service) för att förklara röda marginaler."
         ]}
         motionDecisions={[
-          "Smooth page transition: Minskar kognitiv belastning vid navigation",
-          "Animated värdeförändringar: Om data uppdateras i realtid, indikeras detta med motion",
-          "Expand/collapse för historik: Progressiv disclosure - låter användaren välja informationsdjup",
-          "Hover-feedback på interaktiva element: Tydlig indikation på vad som kan klickas",
+          "Transitions vid sidbyte: Sidan tonas in mjukt för att förhindra kognitiva hopp.",
+          "Animerade staplar: Kostnaderna ritas upp med en mjuk tillväxtkurva för ökad scannbarhet."
         ]}
-      />
+      /> */}
 
       {/* Header Card */}
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
+        className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col md:flex-row md:items-center justify-between gap-6"
+      >
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
+            <User className="w-6 h-6 text-blue-600" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs font-mono font-bold text-gray-500">{vehicle.id}</span>
+              <div className={`w-2 h-2 rounded-full ${statusColors[vehicle.status]}`} />
+              <span className="text-xs text-gray-600 font-semibold">{statusLabels[vehicle.status]}</span>
+            </div>
+            <h2 className="text-xl font-bold text-gray-900">{vehicle.name}</h2>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-6">
+          <div className="text-right">
+            <p className="text-xs text-gray-500">Ackumulerad Intäkt</p>
+            <p className="text-lg font-bold text-gray-900">{vehicle.revenue.toLocaleString()} kr</p>
+          </div>
+          <div className="w-px h-10 bg-gray-200" />
+          <div className="text-right">
+            <p className="text-xs text-gray-500">Marginal</p>
+            <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold border mt-0.5 ${getMarginBg(marginPercentage)} ${getMarginColor(marginPercentage)}`}>
+              {marginPercentage}%
+            </span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Transport Intelligence Graph */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <Card className="p-6">
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <div className={`w-3 h-3 rounded-full ${statusColors[vehicle.status]}`} />
-                <Badge variant="secondary">{vehicle.id}</Badge>
-                <Badge>{statusLabels[vehicle.status]}</Badge>
+        <Card className="p-6 bg-slate-900 border-slate-800 text-white shadow-xl">
+          <h3 className="font-bold mb-6 text-xs text-slate-400 uppercase tracking-wider">Transport Intelligence Graph</h3>
+          <div className="grid grid-cols-2 md:flex md:flex-row items-center justify-between gap-6 md:gap-4">
+            
+            {/* Step 1: Vehicle */}
+            <div className="flex flex-col items-center text-center">
+              <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center border border-blue-500/40">
+                <Calendar className="w-5 h-5 text-blue-400" />
               </div>
-              <h1 className="text-3xl font-semibold text-gray-900 mb-2">
-                {vehicle.name}
-              </h1>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  <span>Uppdaterad {vehicle.lastUpdate}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  <span>Realtidsdata</span>
-                </div>
-              </div>
+              <span className="text-xs font-semibold mt-2 text-white">Fordon</span>
+              <span className="text-[10px] text-slate-400 font-mono">{vehicle.id}</span>
             </div>
-          </div>
+            
+            <ChevronRight className="w-5 h-5 text-slate-700 hidden md:block" />
 
-          {/* Alerts */}
-          {vehicle.alerts.length > 0 && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <AlertTriangle className="w-5 h-5 text-red-600" />
-                <h3 className="font-semibold text-red-900">
-                  Varningar ({vehicle.alerts.length})
-                </h3>
+            {/* Step 2: Driver */}
+            <div className="flex flex-col items-center text-center">
+              <div className="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center border border-purple-500/40">
+                <User className="w-5 h-5 text-purple-400" />
               </div>
-              <div className="space-y-2">
-                {vehicle.alerts.map((alert) => (
-                  <div key={alert.id} className="flex items-start gap-3">
-                    <Badge
-                      variant={alert.type === "critical" ? "destructive" : "secondary"}
-                      className="mt-0.5"
-                    >
-                      {alert.type === "critical" ? "Kritisk" : "Varning"}
-                    </Badge>
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-900">{alert.message}</p>
-                      <p className="text-xs text-gray-500 mt-1">Kl. {alert.timestamp}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <span className="text-xs font-semibold mt-2 text-white">Chaufför</span>
+              <span className="text-[10px] text-slate-400">{vehicle.driver}</span>
             </div>
-          )}
 
-          {/* Key Metrics Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <Gauge className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-              <p className="text-2xl font-semibold text-gray-900">{vehicle.speed}</p>
-              <p className="text-sm text-gray-600">km/h</p>
+            <ChevronRight className="w-5 h-5 text-slate-700 hidden md:block" />
+
+            {/* Step 3: Route */}
+            <div className="flex flex-col items-center text-center">
+              <div className="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center border border-yellow-500/40">
+                <MapPin className="w-5 h-5 text-yellow-400" />
+              </div>
+              <span className="text-xs font-semibold mt-2 text-white">Rutt</span>
+              <span className="text-[10px] text-slate-400">{vehicle.location}</span>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <Battery className="w-8 h-8 text-green-600 mx-auto mb-2" />
-              <p className="text-2xl font-semibold text-gray-900">{vehicle.batteryLevel}%</p>
-              <p className="text-sm text-gray-600">Batteri</p>
+
+            <ChevronRight className="w-5 h-5 text-slate-700 hidden md:block" />
+
+            {/* Step 4: Customer */}
+            <div className="flex flex-col items-center text-center">
+              <div className="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center border border-cyan-500/40">
+                <Building className="w-5 h-5 text-cyan-400" />
+              </div>
+              <span className="text-xs font-semibold mt-2 text-white">Kund</span>
+              <span className="text-[10px] text-slate-400">{matchedCustomer}</span>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <Thermometer className="w-8 h-8 text-orange-600 mx-auto mb-2" />
-              <p className="text-2xl font-semibold text-gray-900">{vehicle.temperature}°C</p>
-              <p className="text-sm text-gray-600">Temperatur</p>
+
+            <ChevronRight className="w-5 h-5 text-slate-700 hidden md:block" />
+
+            {/* Step 5: Profit */}
+            <div className="flex flex-col items-center text-center col-span-2 md:col-span-1">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center border ${
+                profit >= 0 ? "bg-green-500/20 border-green-500/40" : "bg-red-500/20 border-red-500/40"
+              }`}>
+                <DollarSign className={`w-5 h-5 ${profit >= 0 ? "text-green-400" : "text-red-400"}`} />
+              </div>
+              <span className="text-xs font-semibold mt-2 text-white">Vinstbidrag</span>
+              <span className={`text-xs font-bold ${profit >= 0 ? "text-green-400" : "text-red-400"}`}>
+                {profit.toLocaleString()} kr
+              </span>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <TrendingUp className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-              <p className="text-2xl font-semibold text-gray-900">{vehicle.efficiency}%</p>
-              <p className="text-sm text-gray-600">Effektivitet</p>
-            </div>
+
           </div>
         </Card>
       </motion.div>
 
+      {/* Grid for Cost chart and AI insights */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Battery & Performance */}
+        
+        {/* Cost breakdown chart */}
         <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="lg:col-span-2 space-y-6"
+          className="lg:col-span-2"
         >
-          {/* Battery Status */}
-          <Card className="p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <Battery className="w-5 h-5 text-green-600" />
-              <h3 className="font-semibold text-gray-900">Batteristatus</h3>
-            </div>
-
-            <div className="space-y-4 mb-6">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">Laddningsnivå</span>
-                  <span className="font-semibold text-gray-900">
-                    {vehicle.batteryLevel}%
-                  </span>
-                </div>
-                <Progress value={vehicle.batteryLevel} className="h-3" />
-              </div>
-
-              <Separator />
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Återstående räckvidd</p>
-                  <p className="text-xl font-semibold text-gray-900">{vehicle.range} km</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Batteripakettemp.</p>
-                  <p className="text-xl font-semibold text-gray-900">
-                    {vehicle.temperature}°C
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-blue-50 rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-3">Batterihistorik (24h)</h4>
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={batteryHistoryData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="time" stroke="#6b7280" fontSize={11} />
-                  <YAxis stroke="#6b7280" fontSize={11} domain={[0, 100]} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "white",
-                      border: "1px solid #e5e7eb",
-                      borderRadius: "8px",
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="level"
-                    stroke="#3b82f6"
-                    strokeWidth={2}
-                    dot={{ fill: "#3b82f6", r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-
-          {/* Performance Metrics */}
-          <Card className="p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <Zap className="w-5 h-5 text-yellow-600" />
-              <h3 className="font-semibold text-gray-900">Prestandamätvärden</h3>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm text-gray-600">Effektivitet</span>
-                  <span className="text-lg font-semibold text-green-600">
-                    {vehicle.efficiency}%
-                  </span>
-                </div>
-                <Progress value={vehicle.efficiency} className="h-2" />
-                <p className="text-xs text-gray-500 mt-2">
-                  Energianvändning jämfört med optimalt
-                </p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-600 mb-2">Genomsnittlig hastighet</p>
-                <p className="text-2xl font-semibold text-gray-900">{vehicle.speed}</p>
-                <p className="text-xs text-gray-500 mt-1">km/h denna resa</p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-600 mb-2">Körsträcka denna vecka</p>
-                <p className="text-2xl font-semibold text-gray-900">1,284</p>
-                <p className="text-xs text-gray-500 mt-1">km</p>
-              </div>
-            </div>
+          <Card className="p-6 bg-white border-gray-200">
+            <h3 className="font-semibold text-gray-900 mb-6 text-base flex items-center gap-2">
+              <TrendingDown className="w-5 h-5 text-red-500" />
+              Kostnadsfördelning på rutt
+            </h3>
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart data={costData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis type="number" stroke="#6b7280" fontSize={11} tickFormatter={(v) => `${v / 1000}k`} />
+                <YAxis dataKey="name" type="category" stroke="#6b7280" fontSize={11} width={80} />
+                <Tooltip formatter={(v) => `${Number(v).toLocaleString()} kr`} />
+                <Bar dataKey="belopp" fill="#ef4444" radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </Card>
         </motion.div>
 
-        {/* Right Column - Info */}
+        {/* AI Margin insights */}
         <motion.div
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="space-y-6"
         >
-          {/* Vehicle Info */}
-          <Card className="p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Fordonsinformation</h3>
+          <Card className="p-6 bg-slate-950 border-slate-900 text-white h-full flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Position</p>
-                  <p className="text-sm text-gray-600">{vehicle.location}</p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {vehicle.coordinates.lat.toFixed(4)}°N, {vehicle.coordinates.lng.toFixed(4)}°E
+              <h3 className="font-semibold text-base flex items-center gap-2 text-cyan-400">
+                <Zap className="w-5 h-5" />
+                AI Marginalanalys
+              </h3>
+              
+              {vehicle.id === "VLV-003" ? (
+                <div className="text-xs text-slate-300 space-y-3 leading-relaxed">
+                  <p className="text-red-400 font-semibold">🚨 Kritiska avvikelser upptäckta:</p>
+                  <ul className="space-y-2 list-disc list-inside">
+                    <li>**Servicekostnader:** <span className="text-red-400 font-bold">+42%</span> pga temperaturdiagnostik.</li>
+                    <li>**Förbrukning:** <span className="text-red-400 font-bold">+18%</span> jämfört med fordonssnitt.</li>
+                    <li>**Tomgångskörning:** <span className="text-red-400 font-bold">+31%</span> (ca 45 min per skift).</li>
+                    <li>**Haveririsk (60 dagar):** <span className="text-red-400 font-bold">HÖG</span> (kylsystem).</li>
+                  </ul>
+                  <p className="mt-2 text-slate-400">
+                    *Åtgärd:* Planera batteri/kylsystemsdiagnostik i underhållspanelen för att undvika haveri och öka marginalen.
                   </p>
                 </div>
-              </div>
-
-              <Separator />
-
-              <div className="flex items-start gap-3">
-                <User className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Förare</p>
-                  <p className="text-sm text-gray-600">{vehicle.driver}</p>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="flex items-start gap-3">
-                <Calendar className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Servicehistorik</p>
-                  <p className="text-sm text-gray-600">
-                    {vehicle.tripsSinceService} körningar sedan senaste service
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Nästa service om {vehicle.nextServiceIn} körningar
+              ) : vehicle.id === "VLV-001" ? (
+                <div className="text-xs text-slate-300 space-y-3 leading-relaxed">
+                  <p className="text-emerald-400 font-semibold">🟢 Optimal prestanda på rutt:</p>
+                  <ul className="space-y-2 list-disc list-inside">
+                    <li>**Körstilseffektivitet:** <span className="text-emerald-400 font-bold">94%</span> (toppnivå).</li>
+                    <li>**Tomgångskörning:** <span className="text-emerald-400 font-bold">-12%</span> (lägre än snittet).</li>
+                    <li>**Batterihälsa:** Stabil räckviddskurva på Göteborg-Oslo.</li>
+                  </ul>
+                  <p className="mt-2 text-slate-400">
+                    *Info:* Chaufför Erik Andersson bidrar med maximal effektivitet vilket ger fordonet en stark marginal på 14.8%.
                   </p>
                 </div>
-              </div>
+              ) : (
+                <div className="text-xs text-slate-300 space-y-3 leading-relaxed">
+                  <p className="text-yellow-400 font-semibold">🟡 Normala avvikelser:</p>
+                  <ul className="space-y-2 list-disc list-inside">
+                    <li>**Körstilseffektivitet:** {vehicle.efficiency}% (normalt).</li>
+                    <li>**Tullar & avgifter:** Måttliga nivåer på rutten {vehicle.location}.</li>
+                  </ul>
+                  <p className="mt-2 text-slate-400">
+                    *Analys:* Fordonet håller sin budgetmarginal men kan förbättras ytterligare genom optimering av ruttladdning.
+                  </p>
+                </div>
+              )}
             </div>
-          </Card>
 
-          {/* Quick Actions */}
-          <Card className="p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Snabbåtgärder</h3>
-            <div className="space-y-3">
-              <Link to="/app/maintenance">
-                <Button className="w-full justify-start" variant="outline">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Boka service
+            <div className="pt-6 border-t border-slate-900 mt-6">
+              <Link to="/app/advisor" className="block w-full">
+                <Button variant="outline" className="w-full text-xs text-cyan-400 border-cyan-900/50 hover:bg-slate-900 hover:text-cyan-300 bg-transparent">
+                  Chatta om fordon {vehicle.id}
                 </Button>
               </Link>
-              <Button className="w-full justify-start" variant="outline">
-                <MapPin className="w-4 h-4 mr-2" />
-                Visa på karta
-              </Button>
-              <Button className="w-full justify-start" variant="outline">
-                <TrendingUp className="w-4 h-4 mr-2" />
-                Se fullständig historik
-              </Button>
-            </div>
-          </Card>
-
-          {/* Status Summary */}
-          <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
-            <h3 className="font-semibold text-gray-900 mb-4">Statussammanfattning</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-700">Systemhälsa</span>
-                <Badge variant="secondary" className="bg-green-100 text-green-700">
-                  Utmärkt
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-700">Senaste uppdatering</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {vehicle.lastUpdate}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-700">Uppetid denna månad</span>
-                <span className="text-sm font-medium text-gray-900">97.8%</span>
-              </div>
             </div>
           </Card>
         </motion.div>
+
       </div>
+
+      {/* Operational parameters */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="grid grid-cols-1 md:grid-cols-3 gap-4"
+      >
+        <Card className="p-5 bg-white border-gray-200">
+          <div className="flex items-center gap-2 mb-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <Battery className="w-4 h-4 text-green-500" />
+            Batteristatus
+          </div>
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600 font-medium">Laddningsnivå</span>
+              <span className="font-bold text-gray-900">{vehicle.batteryLevel}%</span>
+            </div>
+            <Progress value={vehicle.batteryLevel} className="h-1.5" />
+            <p className="text-xs text-gray-500 pt-1">
+              Räckvidd: <span className="font-bold text-gray-800">{vehicle.range} km</span> kvar på laddningen.
+            </p>
+          </div>
+        </Card>
+
+        <Card className="p-5 bg-white border-gray-200">
+          <div className="flex items-center gap-2 mb-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <Thermometer className="w-4 h-4 text-orange-500" />
+            Tekniska värden
+          </div>
+          <div className="grid grid-cols-2 gap-4 text-center">
+            <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+              <p className="text-lg font-bold text-gray-900">{vehicle.temperature}°C</p>
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Batteritemp</p>
+            </div>
+            <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+              <p className="text-lg font-bold text-gray-900">{vehicle.efficiency}%</p>
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Körstil</p>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-5 bg-white border-gray-200">
+          <div className="flex items-center gap-2 mb-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <Gauge className="w-4 h-4 text-blue-500" />
+            Serviceindikator
+          </div>
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs text-gray-600">
+              <span>Rundturer sedan service:</span>
+              <span className="font-bold text-gray-800">{vehicle.tripsSinceService} st</span>
+            </div>
+            <div className="flex justify-between text-xs text-gray-600">
+              <span>Service krävs om:</span>
+              {vehicle.nextServiceIn <= 20 ? (
+                <span className="font-bold text-red-600">{vehicle.nextServiceIn} körningar</span>
+              ) : (
+                <span className="font-bold text-gray-800">{vehicle.nextServiceIn} körningar</span>
+              )}
+            </div>
+            <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-blue-500"
+                style={{ width: `${Math.max(10, Math.min(100, (vehicle.tripsSinceService / 200) * 100))}%` }}
+              />
+            </div>
+          </div>
+        </Card>
+      </motion.div>
     </motion.div>
   );
 }

@@ -2,8 +2,9 @@ import { Outlet, Link, useLocation } from "react-router";
 import { motion } from "motion/react";
 import {
   LayoutDashboard,
-  Wrench,
-  Users,
+  Sparkles,
+  Calculator,
+  Plug,
   TrendingUp,
   ExternalLink,
 } from "lucide-react";
@@ -11,8 +12,9 @@ import { cn } from "./ui/utils";
 
 const navItems = [
   { path: "/app", label: "Dashboard", icon: LayoutDashboard },
-  { path: "/app/maintenance", label: "Underhåll", icon: Wrench },
-  { path: "/app/drivers", label: "Förare", icon: Users },
+  { path: "/app/advisor", label: "AI Advisor", icon: Sparkles },
+  { path: "/app/tender", label: "Tender AI", icon: Calculator },
+  { path: "/app/integrations", label: "Integrationer", icon: Plug },
 ];
 
 function isNavActive(pathname: string, itemPath: string) {
@@ -39,11 +41,11 @@ export function Layout() {
                 <TrendingUp className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">
-                  FleetPulse
+                <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-1.5">
+                  FleetPulse <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">AI</span>
                 </h1>
-                <p className="text-sm text-gray-500">
-                  Fleet Control Center
+                <p className="text-sm text-gray-500 font-medium">
+                  Profit Intelligence Hub
                 </p>
               </div>
             </Link>
@@ -53,11 +55,11 @@ export function Layout() {
                 className="hidden sm:flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition-colors"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
-                Webbplats
+                Startsida
               </Link>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
+              <div className="flex items-center gap-2 text-sm text-gray-600 bg-slate-100 px-3 py-1.5 rounded-full font-medium">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                Live Monitoring
+                AI Sync: Aktiv
               </div>
             </div>
           </div>
@@ -66,7 +68,7 @@ export function Layout() {
 
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-[1600px] mx-auto px-6">
-          <div className="flex gap-1">
+          <div className="flex gap-1 overflow-x-auto scrollbar-none">
             {navItems.map((item) => {
               const isActive = isNavActive(location.pathname, item.path);
               const Icon = item.icon;
@@ -76,7 +78,7 @@ export function Layout() {
                   key={item.path}
                   to={item.path}
                   className={cn(
-                    "relative px-6 py-4 flex items-center gap-2 text-sm font-medium transition-colors",
+                    "relative px-6 py-4 flex items-center gap-2 text-sm font-semibold transition-colors shrink-0",
                     isActive
                       ? "text-blue-600"
                       : "text-gray-600 hover:text-gray-900"
