@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Link2, LayoutDashboard, Rocket } from "lucide-react";
+import { Link2, Database, Sparkles } from "lucide-react";
 import { ScrollReveal } from "./ScrollReveal";
 import { fadeUp, staggerContainer } from "./animations";
 
@@ -7,23 +7,23 @@ const steps = [
   {
     icon: Link2,
     step: "01",
-    title: "Anslut din flotta",
+    title: "Anslut system på 5 min",
     description:
-      "Integrera med Volvo telematik eller importera fordon manuellt. Klart på under 15 minuter.",
+      "Integrera era befintliga telematiksystem (Geotab, Samsara, Volvo Connect) och affärssystem (Fortnox, SAP) med några enkla klick.",
   },
   {
-    icon: LayoutDashboard,
+    icon: Database,
     step: "02",
-    title: "Övervaka i realtid",
+    title: "Skapa en enhetlig transportgraf",
     description:
-      "Dashboard med live batteridata, varningar och fordonsstatus — allt på ett ställe.",
+      "FleetPulse kopplar samman fordon, förare, rutter, order och kostnader till en gemensam och strukturerad sanningskälla.",
   },
   {
-    icon: Rocket,
+    icon: Sparkles,
     step: "03",
-    title: "Optimera & skala",
+    title: "Optimera med AI Advisor",
     description:
-      "Använd insikter för att minska driftstopp, sänka energikostnader och förbättra förarprestanda.",
+      "AI:n analyserar din transportdata i realtid för att hitta olönsamma kunder, minimera tomkörningar och förutsäga kassaflöde.",
   },
 ];
 

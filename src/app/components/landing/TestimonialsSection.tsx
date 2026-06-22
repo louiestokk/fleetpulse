@@ -6,23 +6,23 @@ import { fadeUp, staggerContainer } from "./animations";
 const testimonials = [
   {
     quote:
-      "FleetPulse gav oss full överblick över 40 el-lastbilar på en dag. Varningarna har räddat oss från flera dyra driftstopp.",
+      "Vi trodde vår största kund var mest lönsam. FleetPulse visade att väntetider och tomkörningar åt upp marginalen till under 2%. Helt ovärderligt.",
     author: "Erik Andersson",
-    role: "Flottchef, Nordic Transport AB",
+    role: "VD, Nordic Transport AB",
     avatar: "EA",
   },
   {
     quote:
-      "Underhållsmodulen är genial. Vi planerar service innan problem uppstår — och förarinsikterna har sänkt energiförbrukningen med 12%.",
+      "Med AI Advisor har vi kunnat spara över 500 000 kr på ett år genom att minska tomgångskörning på 12 fordon och byta leveransfönster.",
     author: "Anna Svensson",
     role: "Operativ chef, GreenLogistics",
     avatar: "AS",
   },
   {
     quote:
-      "Bästa UX jag sett i fleet management. Operatörerna förstod systemet direkt utan utbildning.",
+      "Tender AI är fantastisk. Vi använde historisk data för att räkna på Göteborg-Oslo och vann upphandlingen med exakt rätt marginal.",
     author: "Lars Johansson",
-    role: "IT-ansvarig, CityFreight",
+    role: "Kalkylator, CityFreight",
     avatar: "LJ",
   },
 ];

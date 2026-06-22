@@ -3,10 +3,10 @@ import { ScrollReveal } from "./ScrollReveal";
 import { fadeUp } from "./animations";
 
 const stats = [
-  { value: "500+", label: "Elfordon övervakade" },
-  { value: "99.9%", label: "Plattformens uptime" },
-  { value: "34%", label: "Färre oväntade stopp" },
-  { value: "<2 min", label: "Genomsnittlig responstid" },
+  { value: "15+", label: "Telematik- & ERP-system" },
+  { value: "30%", label: "Minskad tomgång & tomkörning" },
+  { value: "527k kr", label: "Snittbesparing per år/åkeri" },
+  { value: "10x", label: "Snabbare anbudskalkyler" },
 ];
 
 export function StatsSection() {

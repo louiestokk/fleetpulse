@@ -24,14 +24,13 @@ export function CtaSection() {
                 variants={fadeUp}
                 className="text-4xl sm:text-5xl font-bold text-white tracking-tight"
               >
-                Redo att ta kontroll över flottan?
+                Redo att maximera era transportmarginaler?
               </motion.h2>
               <motion.p
                 variants={fadeUp}
                 className="mt-6 text-lg text-slate-400 max-w-2xl mx-auto"
               >
-                Öppna live dashboard med demo-data och se hur FleetPulse kan
-                transformera er elflotta — helt gratis i 14 dagar.
+                Koppla samman era system på några minuter och låt FleetPulse AI Advisor identifiera olönsamma rutter, kunder och dolda kostnader direkt.
               </motion.p>
               <motion.div variants={fadeUp} className="mt-10">
                 <Link to="/app">

@@ -7,11 +7,12 @@ import {
 } from "motion/react";
 import {
   ArrowRight,
-  Battery,
   Zap,
   Shield,
   Play,
-  Truck,
+  Link2,
+  Sparkles,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -42,10 +43,10 @@ function FloatingOrb({
 }
 
 function DashboardPreview() {
-  const vehicles = [
-    { id: "VLV-001", battery: 87, status: "Aktiv", color: "bg-green-500" },
-    { id: "VLV-003", battery: 23, status: "Varning", color: "bg-red-500" },
-    { id: "VLV-002", battery: 45, status: "Laddar", color: "bg-blue-500" },
+  const integrations = [
+    { name: "Samsara Telematics", sync: 98, color: "bg-green-500" },
+    { name: "Fortnox ERP", sync: 85, color: "bg-blue-500" },
+    { name: "Volvo Connect", sync: 92, color: "bg-green-500" },
   ];
 
   return (
@@ -67,19 +68,19 @@ function DashboardPreview() {
             <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
             <div className="w-3 h-3 rounded-full bg-green-500/80" />
           </div>
-          <span className="text-xs text-slate-500 ml-2">Fleet Control Center</span>
+          <span className="text-xs text-slate-500 ml-2">FleetPulse AI Advisor</span>
           <div className="ml-auto flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-xs text-green-400">Live</span>
+            <span className="text-xs text-green-400">Live data</span>
           </div>
         </div>
 
         <div className="p-5 space-y-4">
           <div className="grid grid-cols-3 gap-3">
             {[
-              { label: "Aktiva", value: "3", icon: Truck },
-              { label: "Batteri", value: "56%", icon: Battery },
-              { label: "Effektivitet", value: "89%", icon: Zap },
+              { label: "Anslutna system", value: "8 st", icon: Link2 },
+              { label: "AI Advisor status", value: "Aktiv", icon: Sparkles },
+              { label: "Est. besparing", value: "527k kr", icon: TrendingUp },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -89,38 +90,37 @@ function DashboardPreview() {
                 className="bg-white/5 rounded-xl p-3 border border-white/5"
               >
                 <stat.icon className="w-4 h-4 text-blue-400 mb-2" />
-                <div className="text-lg font-semibold text-white">{stat.value}</div>
+                <div className="text-sm font-semibold text-white">{stat.value}</div>
                 <div className="text-[10px] text-slate-500">{stat.label}</div>
               </motion.div>
             ))}
           </div>
 
           <div className="space-y-2">
-            {vehicles.map((v, i) => (
+            <div className="text-xs font-semibold text-slate-400 px-1">Integrationsnav (Sync status)</div>
+            {integrations.map((item, i) => (
               <motion.div
-                key={v.id}
+                key={item.name}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1.2 + i * 0.12 }}
                 className="flex items-center gap-3 bg-white/5 rounded-lg p-3 border border-white/5"
               >
-                <div className={`w-2 h-2 rounded-full ${v.color}`} />
-                <span className="text-xs text-slate-400 font-mono">{v.id}</span>
+                <div className={`w-2 h-2 rounded-full ${item.color}`} />
+                <span className="text-xs text-slate-300 font-mono w-32 truncate">{item.name}</span>
                 <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
                   <motion.div
                     className={`h-full rounded-full ${
-                      v.battery > 50
+                      item.sync > 90
                         ? "bg-green-500"
-                        : v.battery > 30
-                          ? "bg-yellow-500"
-                          : "bg-red-500"
+                        : "bg-blue-500"
                     }`}
                     initial={{ width: 0 }}
-                    animate={{ width: `${v.battery}%` }}
+                    animate={{ width: `${item.sync}%` }}
                     transition={{ delay: 1.5 + i * 0.2, duration: 0.8, ease: "easeOut" }}
                   />
                 </div>
-                <span className="text-xs text-white">{v.battery}%</span>
+                <span className="text-xs text-white">{item.sync}%</span>
               </motion.div>
             ))}
           </div>
@@ -172,7 +172,7 @@ export function HeroSection() {
             >
               <Badge className="mb-6 bg-blue-500/10 text-blue-300 border-blue-500/20 hover:bg-blue-500/20">
                 <Zap className="w-3 h-3 mr-1" />
-                Ny: Prediktivt underhåll med AI
+                Nytt: Profit Intelligence AI
               </Badge>
             </motion.div>
 
@@ -182,9 +182,9 @@ export function HeroSection() {
               transition={{ duration: 0.7, delay: 0.1 }}
               className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05]"
             >
-              Full kontroll över din{" "}
+              Hitta dolda vinster i din{" "}
               <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-300 bg-clip-text text-transparent">
-                elfordonflotta
+                transportdata
               </span>
             </motion.h1>
 
@@ -194,9 +194,7 @@ export function HeroSection() {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="mt-6 text-lg text-slate-400 max-w-xl leading-relaxed"
             >
-              FleetPulse ger operatörer realtidsinsikt i batteristatus, underhåll,
-              förarprestanda och varningar — så du kan agera innan problem blir
-              kostsamma.
+              Koppla samman telematik, TMS, ERP och AI i en gemensam plattform på några minuter. Sluta fråga &quot;Var är lastbilen?&quot; och låt AI svara på vilka kunder som faktiskt är lönsamma.
             </motion.p>
 
             <motion.div
@@ -211,7 +209,7 @@ export function HeroSection() {
                     size="lg"
                     className="h-12 px-8 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white border-0 shadow-xl shadow-blue-500/30 text-base"
                   >
-                    Öppna live dashboard
+                    Öppna AI Advisor
                     <ArrowRight className="w-4 h-4 ml-1" />
                   </Button>
                 </motion.div>
@@ -244,7 +242,7 @@ export function HeroSection() {
               <div className="w-px h-4 bg-slate-700" />
               <span>99.9% uptime SLA</span>
               <div className="w-px h-4 bg-slate-700" />
-              <span>Volvo-kompatibel</span>
+              <span>Öppet API & Webhooks</span>
             </motion.div>
           </div>
 

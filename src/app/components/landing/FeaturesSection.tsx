@@ -1,68 +1,68 @@
 import { motion } from "motion/react";
 import {
-  Battery,
-  Wrench,
-  Users,
-  Bell,
-  BarChart3,
-  MapPin,
+  TrendingUp,
+  MessageSquare,
+  FileText,
+  Link2,
+  Plug,
+  Cpu,
 } from "lucide-react";
 import { ScrollReveal } from "./ScrollReveal";
 import { fadeUp, staggerContainer } from "./animations";
 
 const features = [
   {
-    icon: Battery,
-    title: "Realtids batteriövervakning",
+    icon: TrendingUp,
+    title: "Profit Intelligence AI",
     description:
-      "Se laddningsnivå, räckvidd och temperatur för varje fordon — med färgkodade varningar innan batteriet tar slut.",
+      "Räkna ut exakta marginaler per kund, rutt och order. Se dolda kostnader som bränsle, löner, väntetider, vägavgifter och tomkörning sammanställda automatiskt.",
     gradient: "from-green-500/20 to-emerald-500/5",
     iconColor: "text-green-400",
     span: "lg:col-span-2",
   },
   {
-    icon: Bell,
-    title: "Smart larmhantering",
+    icon: MessageSquare,
+    title: "FleetPulse AI Advisor",
     description:
-      "Prioriterade varningar som hjärnan tolkar 60 000× snabbare än text. Kritiska händelser först.",
-    gradient: "from-red-500/20 to-orange-500/5",
-    iconColor: "text-red-400",
+      "Inga komplexa dashboards eller BI-system. Chatta direkt med din flotta: \"Vilka fordon kostar mest just nu?\" eller \"Hur sparar vi 500 000 kr nästa år?\"",
+    gradient: "from-blue-500/20 to-cyan-500/5",
+    iconColor: "text-blue-400",
     span: "",
   },
   {
-    icon: Wrench,
-    title: "Underhållscenter",
+    icon: FileText,
+    title: "Contract & Tender AI",
     description:
-      "Planera service, följ upp reparationer och undvik oväntade driftstopp med prediktiv schemaläggning.",
-    gradient: "from-orange-500/20 to-amber-500/5",
-    iconColor: "text-orange-400",
-    span: "",
-  },
-  {
-    icon: Users,
-    title: "Förarinsikter",
-    description:
-      "Effektivitet, säkerhetspoäng och körbeteende — coacha teamet mot bättre resultat och lägre energiförbrukning.",
+      "Undvik felaktiga priser i upphandlingar. AI analyserar historiska risker, förseningar och rutter för att föreslå det optimala priset per kilometer.",
     gradient: "from-purple-500/20 to-violet-500/5",
     iconColor: "text-purple-400",
     span: "",
   },
   {
-    icon: BarChart3,
-    title: "Analys & rapporter",
+    icon: Link2,
+    title: "Transport Intelligence Graph",
     description:
-      "Energiförbrukning, effektivitetstrender och KPI:er i realtid. Exportera till ditt BI-verktyg.",
-    gradient: "from-blue-500/20 to-cyan-500/5",
-    iconColor: "text-blue-400",
+      "Koppla ihop fordon, förare, rutter, kunder, order och fakturor. AI skapar en helhetsbild av verksamheten där ingen data faller mellan stolarna.",
+    gradient: "from-orange-500/20 to-amber-500/5",
+    iconColor: "text-orange-400",
+    span: "",
+  },
+  {
+    icon: Plug,
+    title: "Öppna Integrationer",
+    description:
+      "Anslut Geotab, Samsara, Volvo Connect, Scania Fleet Management, Fortnox och SAP på några minuter. Transporternas Snowflake + Stripe.",
+    gradient: "from-cyan-500/20 to-teal-500/5",
+    iconColor: "text-cyan-400",
     span: "lg:col-span-2",
   },
   {
-    icon: MapPin,
-    title: "Live positionering",
+    icon: Cpu,
+    title: "REST API & Webhooks",
     description:
-      "GPS-position och hastighet per fordon. Se var flottan befinner sig just nu.",
-    gradient: "from-cyan-500/20 to-teal-500/5",
-    iconColor: "text-cyan-400",
+      "Robust och enhetligt API-gränssnitt för att bygga egna applikationer eller exportera strukturerad transportdata till ert ERP.",
+    gradient: "from-red-500/20 to-orange-500/5",
+    iconColor: "text-red-400",
     span: "",
   },
 ];
@@ -84,11 +84,10 @@ export function FeaturesSection() {
             variants={fadeUp}
             className="mt-4 text-4xl sm:text-5xl font-bold text-slate-900 tracking-tight"
           >
-            Allt du behöver för att styra en modern elflotta
+            En plattform för att driva lönsamma transporter
           </motion.h2>
           <motion.p variants={fadeUp} className="mt-6 text-lg text-slate-600">
-            Byggd för operatörer som behöver svara snabbt — med UX som minskar
-            kognitiv belastning vid hög arbetsbelastning.
+            Byggd för transportbolag som vill samla all sin data i en gemensam sanningskälla — och låta AI styra verksamheten mot högre marginaler.
           </motion.p>
         </ScrollReveal>
 

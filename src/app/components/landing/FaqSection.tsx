@@ -10,24 +10,24 @@ import { fadeUp } from "./animations";
 
 const faqs = [
   {
-    q: "Fungerar FleetPulse med Volvo elfordon?",
-    a: "Ja — plattformen är optimerad för Volvo FE, FL och FMX Electric med direkt telematikintegration. Andra märken stöds via API.",
+    q: "Vilka telematiksystem stöds?",
+    a: "Vi stöder Geotab, Samsara, Verizon Connect, Webfleet, Masternaut, Scania Fleet Management, Volvo Connect, Fleet Complete, Motive, Platform Science och Trimble Transportation, samt övriga via REST API.",
   },
   {
-    q: "Hur snabbt kan vi komma igång?",
-    a: "De flesta kunder är live inom 15 minuter. Anslut telematik, importera fordon och börja övervaka direkt.",
+    q: "Hur kopplar FleetPulse ihop ekonomi och telematik?",
+    a: "Genom vårt integrationslager kan du koppla samman telematikdata med ERP och affärssystem som SAP, Fortnox och Microsoft Dynamics. Det gör att vi kan matcha bränsle, löner, tullar och slitage direkt mot specifika rutter, order och fakturor.",
   },
   {
-    q: "Vad ingår i gratis provperioden?",
-    a: "14 dagars full tillgång till Professional-planen — inget kreditkort krävs. Avsluta när som helst.",
+    q: "Vad är skillnaden mellan FleetPulse och en vanlig telematik-dashboard?",
+    a: "Telematiksystem visar var bilen är och hur mycket bränsle som går åt. FleetPulse skapar en Transport Intelligence Graph som berättar om kunden är lönsam, varför marginalen brister och hur ni kan spara pengar.",
   },
   {
-    q: "Kan jag integrera med vårt befintliga TMS/ERP?",
-    a: "Professional och Enterprise inkluderar REST API och webhooks. Enterprise erbjuder custom integrationer.",
+    q: "Hur fungerar AI Advisor?",
+    a: "AI Advisor fungerar som en intelligent rådgivare i form av en chatt. Istället för att gräva i Excel-ark eller bygga komplicerade BI-rapporter ställer du frågor på vanlig svenska och får omedelbara besparingsåtgärder.",
   },
   {
     q: "Var lagras vår data?",
-    a: "All data lagras i EU (Sverige/Tyskland) och är GDPR-kompatibel med kryptering i vila och under transport.",
+    a: "All data lagras i EU (Sverige och Tyskland) och är GDPR-kompatibel med kryptering både i vila och under transport.",
   },
 ];
 

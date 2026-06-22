@@ -10,48 +10,50 @@ import { cn } from "../ui/utils";
 const plans = [
   {
     name: "Starter",
-    price: { monthly: 990, yearly: 790 },
-    description: "Perfekt för mindre flottor som precis börjar elektrifiera.",
+    price: { monthly: 1990, yearly: 1590 },
+    description: "För mindre åkerier som vill samla sin telematik och få basanalys.",
     features: [
       "Upp till 10 fordon",
+      "1 Telematikanslutning",
+      "Unified Transport Data",
       "Realtids dashboard",
-      "Batteri- & larmövervakning",
-      "E-postsupport",
-      "7 dagars historik",
+      "Basal marginalanalys",
+      "14 dagars historik",
     ],
     cta: "Starta gratis provperiod",
     popular: false,
   },
   {
     name: "Professional",
-    price: { monthly: 2490, yearly: 1990 },
-    description: "För växande transportbolag med daglig operativ styrning.",
+    price: { monthly: 4990, yearly: 3990 },
+    description: "För växande transportbolag som vill optimera sin lönsamhet med AI.",
     features: [
       "Upp till 50 fordon",
-      "Allt i Starter",
-      "Underhållscenter",
-      "Förarinsikter & rapporter",
-      "API-access",
-      "Prioriterad support",
+      "Obegränsade telematikanslutningar",
+      "Profit Intelligence AI",
+      "FleetPulse AI Advisor (Chatt)",
+      "Anslutning till Fortnox / ERP",
+      "Förarinsikter & kostnadsanalys",
       "90 dagars historik",
     ],
-    cta: "Öppna dashboard",
+    cta: "Starta gratis provperiod",
     popular: true,
   },
   {
     name: "Enterprise",
     price: { monthly: null, yearly: null },
-    description: "Skräddarsytt för stora flottor med avancerade krav.",
+    description: "För större transportörskoncerner med avancerade integrationskrav.",
     features: [
       "Obegränsat antal fordon",
       "Allt i Professional",
+      "Contract & Tender AI",
+      "Full API & Webhooks-access",
+      "Anslutning till SAP / Dynamics",
       "Dedikerad account manager",
-      "SLA 99.99%",
-      "On-premise alternativ",
-      "Custom integrationer",
+      "SLA 99.99% uptime",
       "Obegränsad historik",
     ],
-    cta: "Kontakta sälj",
+    cta: "Kontakta oss",
     popular: false,
   },
 ];
@@ -75,10 +77,10 @@ export function PricingSection() {
             variants={fadeUp}
             className="mt-4 text-4xl sm:text-5xl font-bold text-white tracking-tight"
           >
-            Transparent prissättning som växer med dig
+            Transparent prissättning för smartare transporter
           </motion.h2>
           <motion.p variants={fadeUp} className="mt-6 text-lg text-slate-400">
-            14 dagars gratis provperiod. Ingen bindningstid.
+            14 dagars gratis provperiod. Kom igång på några minuter.
           </motion.p>
         </ScrollReveal>
 
